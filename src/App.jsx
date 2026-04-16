@@ -12,6 +12,7 @@ import SantaCar from './components/SantaCar'
 import CarSmoke from './components/CarSmoke'
 import AudioSyncManager from './components/AudioSyncManager'
 import PoseMotionValueDetector from './components/PoseMotionValueDetector'
+import MusicNoteTrail from './components/MusicNoteTrail'
 
 export default function App() {
   const carRef = useRef()
@@ -81,7 +82,8 @@ export default function App() {
             santaScale={2.4} 
             motionValue={activeMotion} 
           />
-
+		{/* THE FIX: Pass the exact same radius and height to the notes! */}
+          <MusicNoteTrail radius={108} y={carHeight+20} />
           <AudioSyncManager 
             santaRef={santaRef} 
             motionValue={activeMotion}
