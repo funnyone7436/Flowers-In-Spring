@@ -4,8 +4,9 @@ let beats = []
 
 export async function loadAudioAndBeats() {
   if (!audio) {
-    audio = new Audio('${import.meta.env.BASE_URL}r3f/music/fallleaves.mp3')
-    await fetch('${import.meta.env.BASE_URL}r3f/music/fallleaves_beat_energy_strength_with_keyframe.json')
+    // THE FIX: These are now wrapped in backticks (`) instead of single quotes (')!
+    audio = new Audio(`${import.meta.env.BASE_URL}r3f/music/fallleaves.mp3`)
+    await fetch(`${import.meta.env.BASE_URL}r3f/music/fallleaves_beat_energy_strength_with_keyframe.json`)
       .then(res => res.json())
       .then(data => {
         beats = data.beats

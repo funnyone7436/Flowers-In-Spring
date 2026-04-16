@@ -14,7 +14,7 @@ export default function AudioSyncManager({ children, motionValue = 0, onFirstLoo
   const loopSignaledRef = useRef(false)
 
   useEffect(() => {
-    fetch('${import.meta.env.BASE_URL}r3f/music/Countdown_final.json')
+    fetch(`${import.meta.env.BASE_URL}r3f/music/Countdown_final.json`)
       .then(res => res.json())
       .then(data => setSongData(data))
       .catch(err => console.error("❌ JSON Error:", err))
