@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber'
 import BackgroundSync from './BackgroundSync'
 
 export default function AudioSyncManager({ children, motionValue = 0, onFirstLoopComplete }) {
-  const audio = useMemo(() => new Audio('/r3f/music/Countdown.mp3'), [])
+  const audio = useMemo(() => new Audio('${import.meta.env.BASE_URL}r3f/music/Countdown.mp3'), [])
   const [songData, setSongData] = useState(null)
   const [hasStarted, setHasStarted] = useState(false)
   const currentFrameRef = useRef(null)
@@ -14,7 +14,7 @@ export default function AudioSyncManager({ children, motionValue = 0, onFirstLoo
   const loopSignaledRef = useRef(false)
 
   useEffect(() => {
-    fetch('/r3f/music/Countdown_final.json')
+    fetch('${import.meta.env.BASE_URL}r3f/music/Countdown_final.json')
       .then(res => res.json())
       .then(data => setSongData(data))
       .catch(err => console.error("❌ JSON Error:", err))

@@ -4,7 +4,7 @@ import * as THREE from 'three'
 
 export default function BackgroundSphere() {
   const { scene } = useThree()
-  const texture = useLoader(THREE.TextureLoader, '/colorChange_frame_12k_1043_1.png')
+  const texture = useLoader(THREE.TextureLoader, `${import.meta.env.BASE_URL}colorChange_frame_12k_1043_1.png`)
 
   // Set the global background color to white
   // This will show through the transparent parts of your PNG
