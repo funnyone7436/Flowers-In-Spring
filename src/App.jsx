@@ -83,7 +83,7 @@ export default function App() {
             motionValue={activeMotion} 
           />
 		{/* THE FIX: Pass the exact same radius and height to the notes! */}
-          <MusicNoteTrail radius={108} y={carHeight+20} />
+          <MusicNoteTrail radius={108} y={carHeight+18} />
           <AudioSyncManager 
             santaRef={santaRef} 
             motionValue={activeMotion}
