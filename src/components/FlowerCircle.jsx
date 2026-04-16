@@ -5,14 +5,12 @@ import { useControls } from 'leva'
 import { SkeletonUtils } from 'three-stdlib'
 import * as THREE from 'three'
 
-// Your custom 16 color codes!
 const BEAT_COLORS = [
   '#ef0b2e', '#db7988', '#b7293e', '#f22544', '#f224cc', '#7e24f2', 
   '#2427f2', '#24a2f2', '#24d9f2', '#24f24b', '#90f224', '#cef224', 
   '#f2ba24', '#f25d24', '#ff8e47', '#db5518'
 ]
 
-// --- BEAT SYNCED FLOWER (DEBUG VERSION) ---
 function ColorfulFlower({ baseScene, scale, glow, currentFrameRef }) {
   const materialRefs = useRef([])
   const baseIndex = useRef(0) 
@@ -47,19 +45,12 @@ function ColorfulFlower({ baseScene, scale, glow, currentFrameRef }) {
     return clone
   }, [baseScene, glow]) 
 
-  // --- THE MUSIC SYNC LOGIC ---
   useFrame(() => {
-    // BUG CHECK #1: Is the ref plugged in?
-    if (!currentFrameRef || !currentFrameRef.current) {
-      // If this is flooding your console, App.jsx is not handing the ref to the flowers!
-      // console.log("❌ Flowers are missing the currentFrameRef!"); 
-      return;
-    }
+    if (!currentFrameRef || !currentFrameRef.current) return;
 
     const frame = currentFrameRef.current
     const beat = frame.audio?.beat || 0
 
-    // Trigger when the beat hits
     if (beat >= 0.4) {
       if (canChangeColor.current) {
         shiftOffset.current += 1 
@@ -68,14 +59,10 @@ function ColorfulFlower({ baseScene, scale, glow, currentFrameRef }) {
         const nextIdx = (baseIndex.current + shiftOffset.current) % BEAT_COLORS.length
         const nextColor = BEAT_COLORS[nextIdx]
 
-        // BUG CHECK #2: Prove the beat is hitting!
-        console.log(`🎵 BEAT HIT! Changing flower to: ${nextColor}`);
-
-        // Update all the petals
         materialRefs.current.forEach((mat) => {
           mat.color.set(nextColor)
           mat.emissive.set(nextColor)
-          mat.needsUpdate = true // Forces ThreeJS to refresh the material
+          mat.needsUpdate = true 
         })
       }
     } 
@@ -88,8 +75,6 @@ function ColorfulFlower({ baseScene, scale, glow, currentFrameRef }) {
   return <primitive object={uniqueScene} scale={scale} />
 }
 
-
-// --- MAIN CIRCLE COMPONENT ---
 export default function FlowerCircle({ 
   count = 10, 
   radius = 85, 
@@ -99,7 +84,8 @@ export default function FlowerCircle({
   glow = 0.8,
   currentFrameRef 
 }) {
-  const { scene } = useGLTF('/glb/whiteFlower.glb')
+  // THE FIX: Add import.meta.env.BASE_URL to dynamic string paths
+  const { scene } = useGLTF(`${import.meta.env.BASE_URL}glb/whiteFlower.glb`)
   
   const { tiltX, tiltY, tiltZ } = useControls('Flower Rotation Fix', {
     tiltX: { value: 0, min: -Math.PI, max: Math.PI, step: 0.1 },
@@ -107,7 +93,6 @@ export default function FlowerCircle({
     tiltZ: { value: 0, min: -Math.PI, max: Math.PI, step: 0.1 }
   })
 
-  // Calculate random sizes for each flower once
   const randomScales = useMemo(() => {
     return Array.from({ length: count }).map(() => {
       const variation = (Math.random() * 2 - 1) * scaleRandomness;
@@ -145,4 +130,4 @@ export default function FlowerCircle({
   )
 }
 
-useGLTF.preload('/glb/whiteFlower.glb')
+useGLTF.preload(`${import.meta.env.BASE_URL}glb/whiteFlower.glb`)

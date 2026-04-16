@@ -49,20 +49,16 @@ const FlowerCar = forwardRef(({
   const meshRef = useRef()
   const particlesRef = useRef([])
 
-  const { nodes } = useGLTF('/glb/FlowerOnCar2.glb')
-  const { scene: whiteFlowerScene } = useGLTF('/glb/whiteFlower.glb')
+  // THE FIX: Apply BASE_URL to the paths here
+  const { nodes } = useGLTF(`${import.meta.env.BASE_URL}glb/FlowerOnCar2.glb`)
+  const { scene: whiteFlowerScene } = useGLTF(`${import.meta.env.BASE_URL}glb/whiteFlower.glb`)
 
   useImperativeHandle(ref, () => meshRef.current)
 
-  // =========================================================
-  // 🌸 MASSIVE SINE-WAVE SKY SETTINGS
-  // =========================================================
   const PARTICLE_COUNT = 300; 
-
   const MIN_SIZE = 0.6; 
   const MAX_SIZE = 1.0; 
-
-  const LIFETIME = 10.0;     // Easily lasts 15 seconds in the sky
+  const LIFETIME = 10.0;     
   const SPAWN_RATE = 0.05;   
 
   const spawnTimer = useRef(0);
@@ -73,7 +69,6 @@ const FlowerCar = forwardRef(({
       active: false, age: 0, x: 0, y: 0, z: 0, baseX: 0, baseY: 0, baseZ: 0, vy: 0, vz: 0
     }))
   );
-  // =========================================================
 
   const trailData = useMemo(() => {
     return Array.from({ length: PARTICLE_COUNT }).map((_, i) => ({
@@ -83,14 +78,10 @@ const FlowerCar = forwardRef(({
       rotX: (Math.random() - 0.5) * 5, 
       rotY: (Math.random() - 0.5) * 5,
       rotZ: (Math.random() - 0.5) * 5,
-      
-      // EXPLICIT SINE WAVE SETTINGS
       swaySpeed: 1.0 + Math.random() * 1.5,    
       swayWidth: 10 + Math.random() * 15,      
-      
       bobSpeed: 1 + Math.random() * 2,         
       bobHeight: 2 + Math.random() * 3,        
-      
       timeOffset: Math.random() * Math.PI * 2, 
     }))
   }, [])
@@ -143,16 +134,9 @@ const FlowerCar = forwardRef(({
         nodes.Hair_Ponytail.rotation.y = Math.cos(t * bounceFrequency) * 0.4
       }
 
-      // =======================================================
-      // 🚀 DYNAMIC MOTION ENERGY
-      // =======================================================
-      // Increase these decimals if you want the motion response to be even more extreme!
-      const energyBoost = 1.0 + (motionValue * 0.05); // Controls jump height & wave width
-      const sizeBoost = 1.0 + (motionValue * 0.015);  // Controls individual flower scale
+      const energyBoost = 1.0 + (motionValue * 0.05); 
+      const sizeBoost = 1.0 + (motionValue * 0.015);  
 
-      // =========================================================
-      // 1. SPAWN NEW PARTICLES
-      // =========================================================
       spawnTimer.current += delta;
       
       if (spawnTimer.current > SPAWN_RATE) {
@@ -164,7 +148,6 @@ const FlowerCar = forwardRef(({
         pState.active = true;
         pState.age = 0;
         
-        // Boost the jump height of the spawned particle based on motionValue
         pState.baseX = (Math.random() - 0.5) * 5; 
         pState.baseY = 12 + (jumpSync * 5 * energyBoost); 
         pState.baseZ = 5;
@@ -175,9 +158,6 @@ const FlowerCar = forwardRef(({
         currentParticleIdx.current = (idx + 1) % PARTICLE_COUNT;
       }
 
-      // =========================================================
-      // 2. UPDATE ACTIVE PARTICLES (Perfect Sine Wave Physics)
-      // =========================================================
       particlesRef.current.forEach((particle, index) => {
         if (!particle) return;
         
@@ -188,36 +168,26 @@ const FlowerCar = forwardRef(({
           pState.age += delta;
           
           if (pState.age < LIFETIME) {
-            
-            // 1. Move the center anchor point back and up
-            // Multiply Upward Drift (vy) by energyBoost so they fly higher when you move!
             pState.baseY += (pState.vy * energyBoost) * delta;
             pState.baseZ += pState.vz * delta;
             
-            // 2. TRUE SINE WAVE MATH: 
-            // Multiply swayWidth by energyBoost so the WHOLE trail spreads out wider!
             const windSwayX = Math.sin(pState.age * data.swaySpeed + data.timeOffset) * (data.swayWidth * energyBoost);
             const floatBobY = Math.cos(pState.age * data.bobSpeed + data.timeOffset) * (data.bobHeight * energyBoost);
 
-            // 3. Apply the sine wave directly to the base position
             pState.x = pState.baseX + windSwayX;
             pState.y = pState.baseY + floatBobY;
             pState.z = pState.baseZ;
 
-            // Apply to the 3D object
             particle.position.set(pState.x, pState.y, pState.z);
 
-            // 4. Apply Dynamic Scale for Individual Flowers
             let currentScale = data.baseScale * sizeBoost;
 
-            // Handle fading out over the last 20% of their lifetime
             const progress = pState.age / LIFETIME;
             if (progress > 0.8) {
               currentScale = currentScale * (1 - ((progress - 0.8) / 0.2)); 
             }
             particle.scale.setScalar(Math.max(0, currentScale));
 
-            // Tumble gently
             particle.rotation.x += data.rotX * delta;
             particle.rotation.y += data.rotY * delta;
             particle.rotation.z += data.rotZ * delta;
@@ -251,7 +221,8 @@ const FlowerCar = forwardRef(({
   )
 })
 
-useGLTF.preload('/glb/FlowerOnCar2.glb')
-useGLTF.preload('/glb/whiteFlower.glb')
+// THE FIX: Apply BASE_URL to preloads
+useGLTF.preload(`${import.meta.env.BASE_URL}glb/FlowerOnCar2.glb`)
+useGLTF.preload(`${import.meta.env.BASE_URL}glb/whiteFlower.glb`)
 
 export default FlowerCar
