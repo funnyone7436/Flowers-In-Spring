@@ -1,10 +1,9 @@
-// src/utils/AudioManager.js
 let audio = null
 let beats = []
 
 export async function loadAudioAndBeats() {
   if (!audio) {
-    // THE FIX: These are now wrapped in backticks (`) instead of single quotes (')!
+    // FIX: Changed 'fallleaves' to 'Countdown' AND used backticks (`)!
     audio = new Audio(`${import.meta.env.BASE_URL}r3f/music/Countdown.mp3`)
     await fetch(`${import.meta.env.BASE_URL}r3f/music/Countdown_final.json`)
       .then(res => res.json())
