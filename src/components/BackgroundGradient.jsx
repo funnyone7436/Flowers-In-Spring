@@ -6,8 +6,8 @@ import { useControls } from 'leva'
 export default function BackgroundGradient() {
   // 1. This creates a "Sky Gradient" folder in your Leva panel
   const { topColor, bottomColor } = useControls('Sky Gradient', {
-    topColor: '#e8e8e8',   // Default Light Yellow eae7d7
-    bottomColor: '#f2ce04' // Default Standard Yellow e7d249
+    topColor: '#eae811',   // Default Light Yellow eae7d7
+    bottomColor: '#06c4f4' // Default Standard Yellow e7d249
   })
 
   return (
